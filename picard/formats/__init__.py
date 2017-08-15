@@ -88,6 +88,7 @@ from picard.formats.id3 import (
     AiffFile,
     MP3File,
     TrueAudioFile,
+    WaveFile,
 )
 if AiffFile:
     register_format(AiffFile)
@@ -126,6 +127,8 @@ if with_opus:
 register_format(OggAudioFile)
 register_format(OggVideoFile)
 
+register_format(WaveFile)
+
 try:
     from picard.formats.mp4 import MP4File
     register_format(MP4File)
@@ -138,5 +141,5 @@ try:
 except ImportError:
     pass
 
-from picard.formats.wav import WAVFile
-register_format(WAVFile)
+from picard.formats.id3 import WaveFile
+register_format(WaveFile)

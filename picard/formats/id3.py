@@ -20,6 +20,7 @@
 import mutagen.apev2
 import mutagen.mp3
 import mutagen.trueaudio
+import mutagen.wave
 try:
     import mutagen.aiff
 except ImportError:
@@ -558,6 +559,7 @@ class ID3File(File):
 
             copy[name] = values
 
+
         return copy
 
 
@@ -626,3 +628,35 @@ if mutagen.aiff:
             metadata['~format'] = self.NAME
 else:
     AiffFile = None
+
+class WaveFile(ID3File):
+
+    """WAVE file."""
+    EXTENSIONS = [".wav"]
+    NAME = "Microsoft WAVE"
+    _File = None
+
+    def _save(self, filename, metadata):
+        log.debug("Saving file %r", filename)
+
+    def _get_file(self, filename):
+        return mutagen.wave.WAVE(filename)
+
+    def _get_tags(self, filename):
+        file = self._get_file(filename)
+        if file.tags is None:
+            file.add_tags()
+        return file.tags
+
+    def _save_tags(self, tags, filename):
+        if config.setting['write_id3v23']:
+            tags.update_to_v23()
+            separator = config.setting['id3v23_join_with']
+            tags.save(filename, v2_version=3, v23_sep=separator)
+        else:
+            tags.update_to_v24()
+            tags.save(filename, v2_version=4)
+
+    def _info(self, metadata, file):
+        super(WaveFile, self)._info(metadata, file)
+        metadata['~format'] = self.NAME
