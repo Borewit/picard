@@ -636,9 +636,6 @@ class WaveFile(ID3File):
     NAME = "Microsoft WAVE"
     _File = None
 
-    def _save(self, filename, metadata):
-        log.debug("Saving file %r", filename)
-
     def _get_file(self, filename):
         return mutagen.wave.WAVE(filename)
 
